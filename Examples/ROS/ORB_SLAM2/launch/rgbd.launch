@@ -1,6 +1,6 @@
 <launch>
   <arg name="path_to_vocabulary" default="$(find ORB_SLAM2)/../../../Vocabulary/ORBvoc.txt"/>
-  <arg name="path_to_settings" default="$(find ORB_SLAM2)/cfg/zed_depth_info.yaml"/>
+  <arg name="path_to_settings" default="$(find ORB_SLAM2)/cfg/zed_depth_cam_config.yaml"/>
 
   <!-- NOTE: Map and odom messages are published at "map" topic -->
   <node name="zed_rgbd_orb" pkg="ORB_SLAM2" type="RGBD" output="screen" args="$(arg path_to_vocabulary) $(arg path_to_settings)">
