@@ -9,6 +9,7 @@ Examples/ROS/ORB_SLAM2/MonoAR
 Examples/ROS/ORB_SLAM2/RGBD
 Examples/ROS/ORB_SLAM2/Stereo
 Examples/ROS/ORB_SLAM2/build/
+Examples/ROS/ORB_SLAM2/src/.ros_rgbd.cc.swp
 Examples/Stereo/stereo_euroc
 Examples/Stereo/stereo_kitti
 KeyFrameTrajectory.txt
@@ -21,4 +22,38 @@ Vocabulary/ORBvoc.txt
 build/
 *~
 lib/
+
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
 
