@@ -1,0 +1,10 @@
+<launch>
+  <arg name="path_to_vocabulary" default="$(find ORB_SLAM2)/../../Vocabulary/ORBvoc.txt"/>
+  <arg name="path_to_settings" default="$(find ORB_SLAM2)/cfg/zed_depth_info.yaml"/>
+  <arg name="do_rectify" default="false"/>
+
+  <node name="zed_stereo_orb" pkg="ORB_SLAM2" type="Stereo" output="screen" args="$(arg path_to_vocabulary) $(arg path_to_settings) $(arg do_rectify)">
+    <!-- <remap from="/camera/left/image_raw" to=""/> -->
+    <!-- <remap from="/camera/right/image_raw" to=""/> -->
+  </node>
+</launch>

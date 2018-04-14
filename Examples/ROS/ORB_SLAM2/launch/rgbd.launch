@@ -1,0 +1,13 @@
+<launch>
+  <arg name="path_to_vocabulary" default="$(find ORB_SLAM2)/../../../Vocabulary/ORBvoc.txt"/>
+  <arg name="path_to_settings" default="$(find ORB_SLAM2)/cfg/zed_depth_info.yaml"/>
+
+  <!-- NOTE: Map and odom messages are published at "map" topic -->
+  <node name="zed_rgbd_orb" pkg="ORB_SLAM2" type="RGBD" output="screen" args="$(arg path_to_vocabulary) $(arg path_to_settings)">
+    <remap from="/camera/rgb/image_raw" to="/left/image_rect_color/img_raw"/>
+    <remap from="/camera/depth_registered/image_raw" to="/depth/depth_registered"/>
+    <!-- <remap from="/orbslam/map" to="/orbslam/map"/> -->
+    <!-- <remap from="/orbslam/odom" to="/orbslam/odom"/> -->
+  </node>
+
+</launch>
