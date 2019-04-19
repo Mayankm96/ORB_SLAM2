@@ -78,6 +78,20 @@ ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 )
 
+# Build project 
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Projects/PLR_Evaluation)
+
+add_executable(mono_plr
+Projects/PLR_Evaluation/mono_plr.cc)
+target_link_libraries(mono_plr ${PROJECT_NAME})
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Projects/3DV_Groundtruth)
+
+add_executable(stereo_cvg
+Projects/3DV_Groundtruth/stereo_cvg.cc)
+target_link_libraries(stereo_cvg ${PROJECT_NAME})
+
 # Build examples
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/Examples/RGB-D)
