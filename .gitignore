@@ -1,4 +1,5 @@
 CMakeLists.txt.user
+**data**
 Examples/Monocular/mono_euroc
 Examples/Monocular/mono_kitti
 Examples/Monocular/mono_tum
@@ -11,6 +12,8 @@ Examples/ROS/ORB_SLAM2/Stereo
 Examples/ROS/ORB_SLAM2/build/
 Examples/Stereo/stereo_euroc
 Examples/Stereo/stereo_kitti
+Projects/3DV_Groundtruth/stereo_cvg
+Projects/PLR_Evaluation/mono_plr
 KeyFrameTrajectory.txt
 Thirdparty/DBoW2/build/
 Thirdparty/DBoW2/lib/
@@ -21,4 +24,3 @@ Vocabulary/ORBvoc.txt
 build/
 *~
 lib/
-
