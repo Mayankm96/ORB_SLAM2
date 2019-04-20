@@ -36,7 +36,11 @@ if(NOT OpenCV_FOUND)
    endif()
 endif()
 
+# Add boost
+find_package(Boost COMPONENTS program_options REQUIRED)
+# Add Eigen
 find_package(Eigen3 3.1.0 REQUIRED)
+# Add Pangolin
 find_package(Pangolin REQUIRED)
 
 include_directories(
@@ -44,6 +48,7 @@ ${PROJECT_SOURCE_DIR}
 ${PROJECT_SOURCE_DIR}/include
 ${EIGEN3_INCLUDE_DIR}
 ${Pangolin_INCLUDE_DIRS}
+${Boost_INCLUDE_DIRS}
 )
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
@@ -74,6 +79,7 @@ target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
 ${Pangolin_LIBRARIES}
+${Boost_LIBRARIES}
 ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
 ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
 )

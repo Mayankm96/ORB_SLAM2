@@ -1,4 +1,6 @@
 CMakeLists.txt.user
+.idea/
+cmake-build-debug/
 **data**
 Examples/Monocular/mono_euroc
 Examples/Monocular/mono_kitti
