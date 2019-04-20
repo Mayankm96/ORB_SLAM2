@@ -38,7 +38,7 @@ void loadImagesKITTI(const string& strPathToSequence, vector<string>& vstrImageF
 int main(int argc, char** argv) {
   // Definitions
   namespace po = boost::program_options;
-  
+
   // Set defaults for modifiable configurations
   bool verbose = false;
   bool visualize = false;
@@ -47,24 +47,24 @@ int main(int argc, char** argv) {
   std::string settingsPath;
   std::string sequencePath;
   std::string outputPath;
-  
+
   // Add options
   po::options_description desc("Options");
   desc.add_options()
     ("help,h", "print help messages")
-    ("sequenceType,t", po::value<std::string>(&sequencePath)->required(), "set the type of sequence (kitti/tum)")
+    ("sequenceType,t", po::value<std::string>(&sequenceType)->required(), "set the type of sequence (kitti/tum)")
     ("vocabularyPath,f", po::value<std::string>(&vocabularyPath)->required(), "set the path of vocabulary")
     ("settingsPath,s", po::value<std::string>(&settingsPath)->required(), "set the path of the settings of the camera")
     ("sequencePath,i", po::value<std::string>(&sequencePath)->required(), "set the path to input sequence")
     ("outputPath,o", po::value<std::string>(&outputPath)->default_value(""), "set the path to store output")
     ("verbose,v", po::bool_switch(&verbose), "set verbosity")
-    ("visualize,z", po::bool_switch(&verbose), "set visualization");
-  
+    ("visualize,z", po::bool_switch(&visualize), "set visualization");
+
   // Override the loaded configurations if options provided
   po::variables_map results;
   try {
     po::store(po::parse_command_line(argc, argv, desc), results); // can throw
-    
+
     if (results.count("help")) {
       cerr << "Usage: " << argv[0] << std::endl << desc;
       return 1;
@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     cerr << e.what() << std::endl << desc;
     return 1;
   }
-  
+
   // Retrieve paths to images
   vector<string> vstrImageFilenames;
   vector<double> vTimestamps;
@@ -103,25 +103,25 @@ int main(int argc, char** argv) {
     return 1;
   }
   int nImages = vstrImageFilenames.size();
-  
+
   // Create SLAM system. It initializes all system threads and gets ready to process frames.
   ORB_SLAM2::System SLAM(vocabularyPath, settingsPath, ORB_SLAM2::System::MONOCULAR, visualize);
-  
+
   // Vector for tracking time statistics
   vector<float> vTimesTrack;
   vTimesTrack.resize(nImages);
-  
+
   cout << endl << "-------" << endl;
   cout << "Start processing sequence ..." << endl;
   cout << "Images in the sequence: " << nImages << endl << endl;
-  
+
   // Main loop
   cv::Mat im;
   for (int ni = 0; ni < nImages; ni++) {
     // Read image from file
     im = cv::imread(vstrImageFilenames[ni], CV_LOAD_IMAGE_UNCHANGED);
     double tframe = vTimestamps[ni];
-    
+
     if (im.empty()) {
       cerr << endl << "Failed to load image at: "
            << string(argv[3]) << "/" << vstrImageFilenames[ni] << endl;
@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
 #else
     std::chrono::monotonic_clock::time_point t1 = std::chrono::monotonic_clock::now();
 #endif
-    
+
     // Pass the image to the SLAM system
     SLAM.TrackMonocular(im, tframe);
 
@@ -142,11 +142,11 @@ int main(int argc, char** argv) {
 #else
     std::chrono::monotonic_clock::time_point t2 = std::chrono::monotonic_clock::now();
 #endif
-    
+
     double ttrack = std::chrono::duration_cast<std::chrono::duration<double> >(t2 - t1).count();
-    
+
     vTimesTrack[ni] = ttrack;
-    
+
     // Wait to load the next frame
     double T = 0;
     if (ni < nImages - 1) {
@@ -158,10 +158,10 @@ int main(int argc, char** argv) {
       usleep((T - ttrack) * 1e6);
     }
   }
-  
+
   // Stop all threads
   SLAM.Shutdown();
-  
+
   // Tracking time statistics
   sort(vTimesTrack.begin(), vTimesTrack.end());
   float totaltime = 0;
@@ -171,10 +171,10 @@ int main(int argc, char** argv) {
   cout << "-------" << endl << endl;
   cout << "median tracking time: " << vTimesTrack[nImages / 2] << endl;
   cout << "mean tracking time: " << totaltime / nImages << endl;
-  
+
   // Save camera trajectory
-  SLAM.SaveKeyFrameTrajectoryTUM(string(outputPath) + "./KeyFrameTrajectory.txt");
-  
+  SLAM.SaveKeyFrameTrajectoryTUM(string(outputPath) + "/stamped_traj_estimate.txt");
+
   return 0;
 }
 
@@ -182,13 +182,13 @@ void loadImagesTUM(const string& strPathToSequence, vector<string>& vstrImageFil
   ifstream f;
   string strFile = strPathToSequence + "/rgb.txt";
   f.open(strFile.c_str());
-  
+
   // skip first three lines
   string s0;
   getline(f, s0);
   getline(f, s0);
   getline(f, s0);
-  
+
   while (!f.eof()) {
     string s;
     getline(f, s);
@@ -207,7 +207,7 @@ void loadImagesTUM(const string& strPathToSequence, vector<string>& vstrImageFil
 
 void loadImagesKITTI(const string& strPathToSequence, vector<string>& vstrImageFilenames, vector<double>& vTimestamps) {
   ifstream fTimes;
-  string strPathTimeFile = strPathToSequence + "/times.txt";
+  string strPathTimeFile = strPathToSequence + "/image_00/times.txt";
   fTimes.open(strPathTimeFile.c_str());
   while (!fTimes.eof()) {
     string s;
@@ -220,15 +220,15 @@ void loadImagesKITTI(const string& strPathToSequence, vector<string>& vstrImageF
       vTimestamps.push_back(t);
     }
   }
-  
-  string strPrefixLeft = strPathToSequence + "/image_0/";
-  
+
+  string strPrefixLeft = strPathToSequence + "/image_00/data/";
+
   const int nTimes = vTimestamps.size();
   vstrImageFilenames.resize(nTimes);
-  
+
   for (int i = 0; i < nTimes; i++) {
     stringstream ss;
-    ss << setfill('0') << setw(6) << i;
+    ss << setfill('0') << setw(10) << i;
     vstrImageFilenames[i] = strPrefixLeft + ss.str() + ".png";
   }
 }
