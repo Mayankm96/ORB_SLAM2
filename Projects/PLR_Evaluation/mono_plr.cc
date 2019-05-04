@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
   std::string vocabularyPath;
   std::string settingsPath;
   std::string sequencePath;
-  std::string outputPath;
+  std::string outputFilePath;
 
   // Add options
   po::options_description desc("Options");
@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     ("vocabularyPath,f", po::value<std::string>(&vocabularyPath)->required(), "set the path of vocabulary")
     ("settingsPath,s", po::value<std::string>(&settingsPath)->required(), "set the path of the settings of the camera")
     ("sequencePath,i", po::value<std::string>(&sequencePath)->required(), "set the path to input sequence")
-    ("outputPath,o", po::value<std::string>(&outputPath)->default_value(""), "set the path to store output")
+    ("outputFilePath,o", po::value<std::string>(&outputFilePath)->default_value(""), "set the file path to store output trajectory")
     ("verbose,v", po::bool_switch(&verbose), "set verbosity")
     ("visualize,z", po::bool_switch(&visualize), "set visualization");
 
@@ -77,8 +77,8 @@ int main(int argc, char** argv) {
       settingsPath = results["settingsPath"].as<std::string>();
     } else if (results.count("sequencePath")) {
       sequencePath = results["sequencePath"].as<std::string>();
-    } else if (results.count("outputPath")) {
-      outputPath = results["outputPath"].as<std::string>();
+    } else if (results.count("outputFilePath")) {
+      outputFilePath = results["outputFilePath"].as<std::string>();
     } else if (results.count("verbose")) {
       verbose = results["verbose"].as<bool>();
     } else if (results.count("visualize")) {
@@ -173,7 +173,7 @@ int main(int argc, char** argv) {
   cout << "mean tracking time: " << totaltime / nImages << endl;
 
   // Save camera trajectory
-  SLAM.SaveKeyFrameTrajectoryTUM(string(outputPath) + "/stamped_traj_estimate.txt");
+  SLAM.SaveKeyFrameTrajectoryTUM(outputFilePath);
 
   return 0;
 }
